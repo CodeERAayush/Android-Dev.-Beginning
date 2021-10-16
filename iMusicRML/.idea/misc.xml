@@ -4,7 +4,9 @@
     <option name="filePathToZoomLevelMap">
       <map>
         <entry key="..\:/Users/AAYUSH PANDEY/Desktop/Android Projects/iMusicRML/app/src/main/res/drawable/iMusic_icon.xml" value="0.21614583333333334" />
+        <entry key="..\:/Users/AAYUSH PANDEY/Desktop/Android Projects/iMusicRML/app/src/main/res/drawable/ic_baseline_library_music_24.xml" value="0.1" />
         <entry key="..\:/Users/AAYUSH PANDEY/Desktop/Android Projects/iMusicRML/app/src/main/res/layout/activity_main.xml" value="0.16666666666666666" />
+        <entry key="..\:/Users/AAYUSH PANDEY/Desktop/Android Projects/iMusicRML/app/src/main/res/layout/activity_player.xml" value="0.22" />
       </map>
     </option>
   </component>

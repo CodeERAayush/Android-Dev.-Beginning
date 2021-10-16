@@ -3,8 +3,11 @@ package com.AayushPandey.imusicrml;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.Manifest;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Environment;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
@@ -18,29 +21,43 @@ import com.karumi.dexter.listener.single.PermissionListener;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collection;
 
 public class MainActivity extends AppCompatActivity {
     ListView listView;
     @Override
-    protected void onCreate(Bundle savedInstanceState){
+    protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        listView=findViewById(R.id.listview);
+        listView = findViewById(R.id.listView);
         Dexter.withContext(this)
                 .withPermission(Manifest.permission.READ_EXTERNAL_STORAGE)
                 .withListener(new PermissionListener() {
                     @Override
                     public void onPermissionGranted(PermissionGrantedResponse permissionGrantedResponse) {
-                        Toast.makeText(MainActivity.this, "Done", Toast.LENGTH_SHORT).show();
-ArrayList<File>mySong=fetchSongs(Environment.getExternalStorageDirectory());
-String [] items =new String[mySong.size()];
 
-for(int i=0;i<mySong.size();i++){
-    items[i]=mySong.get(i).getName().replace(".mp3","");
+//                        Toast.makeText(MainActivity.this, "Runtime permission given", Toast.LENGTH_SHORT).show();
+                        ArrayList<File> mySongs = fetchSongs(Environment.getExternalStorageDirectory());
 
-}
-                        ArrayAdapter<String> adapter=new ArrayAdapter<>(MainActivity.this, android.R.layout.simple_list_item_2,items);
+                        String[] items = new String[mySongs.size()];
+                        for (int i = 0; i < mySongs.size(); i++) {
+                            items[i] = mySongs.get(i).getName().toString().replace(".mp3","");
+                        }
+
+                        ArrayAdapter<String> adapter = new ArrayAdapter<String>(MainActivity.this, android.R.layout.simple_list_item_1, items);
                         listView.setAdapter(adapter);
+                        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                            @Override
+                            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                                Intent intent = new Intent(MainActivity.this, Player.class);
+                                String currentSong = listView.getItemAtPosition(position).toString();
+                                intent.putExtra("songList", mySongs);
+                                intent.putExtra("currentSong", currentSong);
+                                intent.putExtra("position", position);
+                                startActivity(intent);
+                            }
+                        });
 
 
                     }
@@ -52,27 +69,32 @@ for(int i=0;i<mySong.size();i++){
 
                     @Override
                     public void onPermissionRationaleShouldBeShown(PermissionRequest permissionRequest, PermissionToken permissionToken) {
-permissionToken.continuePermissionRequest();
+                        permissionToken.continuePermissionRequest();
                     }
                 })
                 .check();
     }
+
+
+
     public ArrayList<File> fetchSongs(File file){
-        ArrayList arrayList=new ArrayList();
-        File[] Songs = file.listFiles();
-        if(Songs!=null){
-            for(File myFile: Songs){
+        ArrayList arrayList = new ArrayList();
+        File [] songs = file.listFiles();
+        if(songs !=null){
+            for(File myFile: songs){
                 if(!myFile.isHidden() && myFile.isDirectory()){
                     arrayList.addAll(fetchSongs(myFile));
                 }
                 else{
-                    if(myFile.getName().endsWith(".mp3") && !myFile.getName().startsWith(".")){
+                    if(myFile.getName().endsWith(".mp3")){
                         arrayList.add(myFile);
                     }
                 }
-            }
-        }
+            }}
+//            return arrayList;
+
+
         return arrayList;
     }
-    }
 
+}
